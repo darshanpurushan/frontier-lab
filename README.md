@@ -4,15 +4,6 @@
 
 Can portfolio optimization beat a simple equal-weight portfolio after estimation error and trading costs? This project tests that question on observed Yahoo Finance prices and Kenneth French factors. It compares six allocation rules, evaluates risk forecasts against later returns, and reports uncertainty in performance differences. A separate price/volume reversal experiment tests a supplied rank signal.
 
-## Run the historical study
-
-From the project folder on a Mac with Python 3.11 or newer:
-
-```bash
-python3 -m pip install -e '.[dev]'
-python3 run_research.py
-python3 publish_results.py
-```
 
 Open `outputs/research_v2/report.html` and `outputs/etf_research_v2/report.html` for the full HTML reports. `publish_results.py` creates [`docs/HISTORICAL_RESULTS.md`](docs/HISTORICAL_RESULTS.md) and two GitHub-friendly figures from **observed** results only. Review them, then commit. It refuses synthetic runs and checks that published CAGR matches the daily net returns. If Yahoo rate limits you, rerun later; cached downloads are reused. `python3 run_project.py` runs just the main stock study and is suitable for Spyder (F5).
 
@@ -50,20 +41,7 @@ Open `outputs/signal_research/signal_report.html`. It evaluates `rank(ts_decay_l
 
 For offline software checks, run `python3 -m pytest -q` and `python3 run_demo.py`. The demo uses **synthetic data**; its returns are never presented as observed performance.
 
-## Put it on GitHub
 
-After running the historical study and checking the generated research page, create an empty `frontier-lab` repository on your GitHub account and run:
-
-```bash
-git init
-git add .
-git commit -m "Publish portfolio research framework and verified results"
-git branch -M main
-git remote add origin https://github.com/YOUR_USERNAME/frontier-lab.git
-git push -u origin main
-```
-
-The [GitHub Actions workflow](.github/workflows/tests.yml) runs numerical tests without downloading market data. The checked-in `docs/HISTORICAL_RESULTS.md` starter page contains no synthetic performance; regenerate it locally after historical runs. Publish only market-data summaries you are allowed to redistribute.
 
 ## Resume description
 
@@ -71,4 +49,4 @@ The [GitHub Actions workflow](.github/workflows/tests.yml) runs numerical tests 
 - Evaluated covariance estimators using subsequent realized risk, and assessed performance through factor attribution, paired block bootstrap intervals, and a fixed six-case robustness grid.
 - Implemented a distinct volume-conditioned reversal signal experiment, with cross-sectional rank IC, daily versus monthly turnover, and gross/net performance diagnostics.
 
-Add numerical findings only after reviewing the generated [historical results](docs/HISTORICAL_RESULTS.md). See [validation](VALIDATION.md) for execution status and [changes](CHANGELOG.md) for version history.
+
