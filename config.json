@@ -1,0 +1,17 @@
+{
+  "tickers": ["GOOGL", "AMZN", "MSFT", "AAPL", "JPM", "XOM", "JNJ", "PG", "CAT", "NEE", "UNH", "WMT"],
+  "benchmark": "SPY",
+  "start": "2010-01-01",
+  "end": "2026-01-01",
+  "lookback": 504,
+  "max_weight": 0.20,
+  "cost_bps": 10.0,
+  "annualization": 252,
+  "seed": 42,
+  "hac_lags": 5,
+  "evaluation_split": "2021-01-01",
+  "rebalance": "M",
+  "risk_aversion": 5.0,
+  "bootstrap_draws": 2000,
+  "bootstrap_block": 21
+}

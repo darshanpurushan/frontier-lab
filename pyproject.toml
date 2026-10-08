@@ -1,0 +1,26 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "frontier-lab"
+version = "0.4.0"
+description = "Walk-forward portfolio construction, risk estimation, and performance attribution"
+requires-python = ">=3.11"
+dependencies = [
+  "numpy>=1.26,<3", "pandas>=2.2,<4", "scipy>=1.12,<2",
+  "matplotlib>=3.8,<4", "scikit-learn>=1.4,<2",
+  "statsmodels>=0.14,<1", "yfinance>=0.2.54,<2", "certifi>=2024.2.2"
+]
+
+[project.optional-dependencies]
+dev = ["pytest>=8,<10"]
+
+[project.scripts]
+frontier-lab = "frontier_lab.cli:main"
+
+[tool.setuptools.packages.find]
+include = ["frontier_lab*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
