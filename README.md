@@ -7,7 +7,9 @@ Can portfolio optimization beat a simple equal-weight portfolio after estimation
 
 Open `outputs/research_v2/report.html` and `outputs/etf_research_v2/report.html` for the full HTML reports. `publish_results.py` creates [`docs/HISTORICAL_RESULTS.md`](docs/HISTORICAL_RESULTS.md) and two GitHub-friendly figures from **observed** results only. Review them, then commit. It refuses synthetic runs and checks that published CAGR matches the daily net returns. If Yahoo rate limits you, rerun later; cached downloads are reused. `python3 run_project.py` runs just the main stock study and is suitable for Spyder (F5).
 
-The repository ships with source code and tests. Historical performance is not hard-coded: the local historical results page is created only after a real-data run. [Research evidence and status](VALIDATION.md) explains what has been executed. No Sharpe target is imposed.
+The checked-in snapshot contains launchers, publication code, and tests, but the `frontier_lab/` research package is missing. A fresh checkout therefore cannot run the study, synthetic demo, or full research test suite: they fail with `ModuleNotFoundError: No module named 'frontier_lab'`. Installing dependencies alone does not restore that project source. Recover the original package from a complete project revision before following the study commands below.
+
+The standalone publication checks can be run with `python3 -m pytest -q tests/test_publication.py`. They validate local fixtures, not observed strategy performance. Earlier validation records describe historical environments and do not establish that this incomplete snapshot reproduces those runs. [Research evidence and status](VALIDATION.md) separates those records from the current checkout status.
 
 ## Research design
 
