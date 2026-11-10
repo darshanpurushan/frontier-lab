@@ -1,5 +1,11 @@
 # Validation record
 
+## Current checkout limitation — November 9, 2026
+
+The tracked tree does not contain the `frontier_lab/` package imported by the research launchers and `tests/test_research.py`. Full pytest collection fails with `ModuleNotFoundError`. This is a missing-source problem, not evidence that the historical tests below passed in the current checkout. Restore the original research package from a complete revision before claiming reproducibility or rerunning a study.
+
+The standalone publisher's fixture tests run independently with `python3 -m pytest -q tests/test_publication.py`. Their success establishes publication-path behavior only. No historical market-data backtest has been regenerated as part of this correction; the earlier validation entries are retained as historical records.
+
 ## Version 0.4 publication work — October 7, 2026
 
 - Added a historical-results publisher that rejects synthetic runs and verifies exported CAGR against daily net return CSVs before writing a GitHub summary and charts.
