@@ -31,6 +31,8 @@ def load_study(folder):
     net = pd.read_csv(folder / "net.csv", index_col=0, parse_dates=True)
     if net.empty or net.isna().any().any() or not set(expected).issubset(net.columns):
         raise ValueError(f"{folder}: incomplete daily portfolio returns")
+    if not isinstance(net.index, pd.DatetimeIndex) or net.index.hasnans:
+        raise ValueError(f"{folder}: expected valid daily return dates")
     if not net.index.is_monotonic_increasing or net.index.has_duplicates:
         raise ValueError(f"{folder}: dates must be unique and ordered")
     for strategy in expected:
