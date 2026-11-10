@@ -36,6 +36,11 @@ def load_study(folder):
         raise ValueError(f"{folder}: expected finite daily portfolio returns")
     if not net.index.is_monotonic_increasing or net.index.has_duplicates:
         raise ValueError(f"{folder}: dates must be unique and ordered")
+    # This publisher supports fully invested long-only portfolios. A daily
+    # loss below total capital is invalid even if later losses flip the
+    # compounded wealth positive again and happen to match reported CAGR.
+    if (net[expected] < -1).any().any():
+        raise ValueError(f"{folder}: daily portfolio returns cannot be below -100%")
     for strategy in expected:
         reported_cagr = performance.loc[strategy, "CAGR"]
         if not np.isfinite(reported_cagr):
