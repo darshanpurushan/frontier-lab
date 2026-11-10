@@ -5,6 +5,7 @@ import json
 import shutil
 from pathlib import Path
 
+import numpy as np
 import pandas as pd
 
 
@@ -31,13 +32,23 @@ def load_study(folder):
     net = pd.read_csv(folder / "net.csv", index_col=0, parse_dates=True)
     if net.empty or net.isna().any().any() or not set(expected).issubset(net.columns):
         raise ValueError(f"{folder}: incomplete daily portfolio returns")
+    if not np.isfinite(net.to_numpy(dtype=float)).all():
+        raise ValueError(f"{folder}: expected finite daily portfolio returns")
     if not isinstance(net.index, pd.DatetimeIndex) or net.index.hasnans:
         raise ValueError(f"{folder}: expected valid daily return dates")
     if not net.index.is_monotonic_increasing or net.index.has_duplicates:
         raise ValueError(f"{folder}: dates must be unique and ordered")
+    if (net[expected] < -1).any().any():
+        raise ValueError(f"{folder}: daily portfolio returns cannot be below -100%")
     for strategy in expected:
-        actual_cagr = (1 + net[strategy]).prod() ** (252 / len(net)) - 1
-        if abs(actual_cagr - performance.loc[strategy, "CAGR"]) > 1e-7:
+        reported_cagr = performance.loc[strategy, "CAGR"]
+        if not np.isfinite(reported_cagr):
+            raise ValueError(f"{folder}: expected finite CAGR for {strategy}")
+        with np.errstate(over="ignore", invalid="ignore"):
+            actual_cagr = (1 + net[strategy]).prod() ** (252 / len(net)) - 1
+        if not np.isfinite(actual_cagr):
+            raise ValueError(f"{folder}: daily net returns must produce finite CAGR for {strategy}")
+        if abs(actual_cagr - reported_cagr) > 1e-7:
             raise ValueError(f"{folder}: CAGR differs from daily net returns for {strategy}")
     image = folder / "figures" / "wealth_drawdown.png"
     if not image.is_file():
