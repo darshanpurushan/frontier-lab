@@ -53,3 +53,36 @@ def test_inconsistent_daily_returns_cannot_be_published(tmp_path):
     table.to_csv(folder / "performance.csv")
     with pytest.raises(ValueError, match="CAGR differs"):
         load_study(folder)
+
+
+@pytest.mark.parametrize("value", [float("nan"), float("inf"), float("-inf")])
+def test_nonfinite_cagr_cannot_be_published(tmp_path, value):
+    folder = sample_study(tmp_path)
+    table = pd.read_csv(folder / "performance.csv", index_col=0)
+    table.loc["Equal weight", "CAGR"] = value
+    table.to_csv(folder / "performance.csv")
+    with pytest.raises(ValueError, match="finite CAGR"):
+        load_study(folder)
+
+
+@pytest.mark.parametrize("value", [float("inf"), float("-inf")])
+def test_nonfinite_daily_returns_cannot_be_published(tmp_path, value):
+    folder = sample_study(tmp_path)
+    net = pd.read_csv(folder / "net.csv", index_col=0)
+    net.iloc[0, 0] = value
+    net.to_csv(folder / "net.csv")
+    # Make both sides infinite: the old comparison accepted inf - inf = NaN.
+    table = pd.read_csv(folder / "performance.csv", index_col=0)
+    table.loc["Equal weight", "CAGR"] = value
+    table.to_csv(folder / "performance.csv")
+    with pytest.raises(ValueError, match="finite daily portfolio returns"):
+        load_study(folder)
+
+
+def test_overflowing_compounded_returns_cannot_be_published(tmp_path):
+    folder = sample_study(tmp_path)
+    net = pd.read_csv(folder / "net.csv", index_col=0)
+    net["Equal weight"] = 1e100
+    net.to_csv(folder / "net.csv")
+    with pytest.raises(ValueError, match="produce finite CAGR"):
+        load_study(folder)
